@@ -24,7 +24,9 @@ def train(request):
     if form.is_valid():
         loaded_file = request.FILES['file']
         file_name = loaded_file.name
-        path = '/odinstorage/automl_data/datasets/' + file_name  + '/'
+        dataset_name = file_name[:-4]
+
+        path = '/odinstorage/automl_data/datasets/' + dataset_name  + '/'
 
         try:
             os.mkdir(path)
@@ -36,8 +38,6 @@ def train(request):
                 written_file.write(chunk)
 
         train_params = request.POST.dict()
-
-        dataset_name = file_name[:-4]
 
         target_column = train_params["target_column"]
         task_type = train_params["task_type"]

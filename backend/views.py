@@ -45,7 +45,7 @@ def train(request):
         print("train", dataset_name, target_column, task_type)
 
         automl = automl_backend.AutoML(
-            "train", dataset_name, target_column, task_type, sys.maxsize, None)
+            "train", dataset_name, target_column, task_type, 1, None)
         metric, score = automl.train()
         train_results = TrainResults(metric, score)
     else:

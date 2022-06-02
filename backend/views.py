@@ -1,20 +1,17 @@
+import os
 import automl_backend
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from rest_framework import status
 from django.http.response import JsonResponse
 from django.http import HttpResponse
-from .models import TrainResults, Prediction, TestResults
+from .models import FileFormTrain, TrainResults, Prediction, TestResults
 import sys
 sys.path.append("..")
 
 
 def index(request):
-    with open("/odinstorage/request_text.txt", 'w') as output_file:
-        output_file.write('request test')
-
     return HttpResponse("Odin AI backend")
-
 
 @api_view(["POST"])
 def train(request):
@@ -22,21 +19,37 @@ def train(request):
     Gets the parameters needed and performs the trainig.
     """
 
-    train_params = JSONParser().parse(request)
-    print(train_params)
+    form = FileFormTrain(request.POST, request.FILES)
 
-    run_type = "train"
-    dataset_name = train_params["dataset_name"][:-4]
-    target_column = train_params["target_column"]
-    task_type = train_params["task_type"]
-    training_time = train_params["training_time"]
+    if form.is_valid():
+        loaded_file = request.FILES['file']
+        file_name = loaded_file.name
+        path = '/odinstorage/automl_data/datasets/' + file_name  + '/'
 
-    print(run_type, dataset_name, target_column, task_type, training_time)
+        try:
+            os.mkdir(path)
+        except OSError:
+            pass   
 
-    automl = automl_backend.AutoML(
-        run_type, dataset_name, target_column, task_type, training_time, None)
-    metric, score = automl.train()
-    train_results = TrainResults(metric, score)
+        with open(path + file_name, 'wb+') as written_file:
+            for chunk in loaded_file.chunks():
+                written_file.write(chunk)
+
+        train_params = request.POST.dict()
+
+        dataset_name = file_name[:-4]
+
+        target_column = train_params["target_column"]
+        task_type = train_params["task_type"]
+
+        print("train", dataset_name, target_column, task_type)
+
+        automl = automl_backend.AutoML(
+            "train", dataset_name, target_column, task_type, sys.maxsize, None)
+        metric, score = automl.train()
+        train_results = TrainResults(metric, score)
+    else:
+        print('invalid form')
 
     return JsonResponse(train_results.__dict__, status=status.HTTP_200_OK)
 

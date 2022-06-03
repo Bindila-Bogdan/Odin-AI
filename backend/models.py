@@ -14,6 +14,13 @@ class TrainResults():
         self.score = score
 
 
+class FileFormTest(forms.Form):
+    target_column = forms.CharField()
+    task_type = forms.CharField()
+    dataset_name = forms.CharField()
+    file = forms.FileField()
+
+
 class Prediction():
     def __init__(self, predicted_value, index):
         self.index = index

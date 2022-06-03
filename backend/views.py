@@ -5,7 +5,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework import status
 from django.http.response import JsonResponse
 from django.http import HttpResponse
-from .models import FileFormTrain, TrainResults, Prediction, TestResults
+from .models import FileFormTrain, FileFormTest, TrainResults, Prediction, TestResults
 import sys
 sys.path.append("..")
 
@@ -49,6 +49,7 @@ def train(request):
         train_results = TrainResults(metric, score)
 
         return JsonResponse(train_results.__dict__, status=status.HTTP_200_OK)
+
     else:
         print('invalid form')
         error_message = {'error': 'wrong request format'}
@@ -62,30 +63,50 @@ def test(request):
     Predicts the target for received test data set.
     """
 
-    test_params = JSONParser().parse(request)
-    print(test_params)
+    form = FileFormTest(request.POST, request.FILES)
 
-    run_type = "test"
-    task_type = test_params["task_type"]
-    dataset_name = test_params["dataset_name"][:-4]
-    test_dataset_name = test_params["test_dataset_name"][:-4]
-    target_column = test_params["target_column"]
+    if form.is_valid():
+        loaded_file = request.FILES['file']
+        file_name = loaded_file.name
+        dataset_name = request.POST.dict()['dataset_name']    
 
-    print(run_type, task_type, dataset_name, test_dataset_name, target_column)
+        path = '/odinstorage/automl_data/datasets/' + dataset_name + '/'
 
-    automl = automl_backend.AutoML(
-        run_type, dataset_name, target_column, task_type, 1, test_dataset_name)
-    predictions, metric, score = automl.predict()
-    print(metric, score)
+        try:
+            os.mkdir(path)
+        except OSError:
+            pass
 
-    predictions_obj = []
+        with open(path + file_name, 'wb+') as written_file:
+            for chunk in loaded_file.chunks():
+                written_file.write(chunk)
 
-    for i, prediction in enumerate(predictions):
-        j = i + 1
+        target_column = request.POST.dict()["target_column"]
+        task_type = request.POST.dict()["task_type"]
+        test_dataset_name = file_name[:-4]
 
-        prediction_obj = Prediction(prediction, j)
-        predictions_obj.append(prediction_obj.__dict__)
+        print("test", task_type, dataset_name, test_dataset_name, target_column)
 
-    test_results = TestResults(metric, score, predictions_obj)
+        automl = automl_backend.AutoML(
+            "test", dataset_name, target_column, task_type, 2, test_dataset_name)
+        predictions, metric, score = automl.predict()
+        
+        print(metric, score)
 
-    return JsonResponse(test_results.__dict__, status=status.HTTP_200_OK)
+        predictions_obj = []
+
+        for i, prediction in enumerate(predictions):
+            j = i + 1
+
+            prediction_obj = Prediction(prediction, j)
+            predictions_obj.append(prediction_obj.__dict__)
+
+        test_results = TestResults(metric, score, predictions_obj)
+
+        return JsonResponse(test_results.__dict__, status=status.HTTP_200_OK)
+        
+    else:
+        print('invalid form')
+        error_message = {'error': 'wrong request format'}
+
+        return JsonResponse(error_message, status=status.HTTP_400_BAD_REQUEST)

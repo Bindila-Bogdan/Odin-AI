@@ -42,9 +42,9 @@ def train(request):
         task_type = request.POST.dict()["task_type"]
 
         print("train", dataset_name, target_column, task_type)
-
+        
         automl = automl_backend.AutoML(
-            "train", dataset_name, target_column, task_type, 5, None)
+            "train", dataset_name, target_column, task_type, 2, None)
         metric, score = automl.train()
         train_results = TrainResults(metric, score)
 

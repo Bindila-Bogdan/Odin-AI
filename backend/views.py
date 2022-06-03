@@ -13,6 +13,7 @@ sys.path.append("..")
 def index(request):
     return HttpResponse("Odin AI backend")
 
+
 @api_view(["POST"])
 def train(request):
     """
@@ -26,32 +27,33 @@ def train(request):
         file_name = loaded_file.name
         dataset_name = file_name[:-4]
 
-        path = '/odinstorage/automl_data/datasets/' + dataset_name  + '/'
+        path = '/odinstorage/automl_data/datasets/' + dataset_name + '/'
 
         try:
             os.mkdir(path)
         except OSError:
-            pass   
+            pass
 
         with open(path + file_name, 'wb+') as written_file:
             for chunk in loaded_file.chunks():
                 written_file.write(chunk)
 
-        train_params = request.POST.dict()
-
-        target_column = train_params["target_column"]
-        task_type = train_params["task_type"]
+        target_column = request.POST.dict()["target_column"]
+        task_type = request.POST.dict()["task_type"]
 
         print("train", dataset_name, target_column, task_type)
 
         automl = automl_backend.AutoML(
-            "train", dataset_name, target_column, task_type, 1, None)
+            "train", dataset_name, target_column, task_type, 5, None)
         metric, score = automl.train()
         train_results = TrainResults(metric, score)
+
+        return JsonResponse(train_results.__dict__, status=status.HTTP_200_OK)
     else:
         print('invalid form')
+        error_message = {'error': 'wrong request format'}
 
-    return JsonResponse(train_results.__dict__, status=status.HTTP_200_OK)
+        return JsonResponse(error_message, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])

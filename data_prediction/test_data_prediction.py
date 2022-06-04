@@ -165,6 +165,10 @@ def predict_data(dataset_name, csv_file_name, predicted_column, metric, classifi
     files_storing.file_writer(dataset_name, predicted_column, 'testing_report', new_folder_name, testing_info)
 
     print(testing_info)
-    predictions = list(predictions_df[predictions_df.columns[-1]].values)
 
-    return predictions, metric, score
+    if y_test_initial_df is None:
+        test_predictions_df = pd.concat([x_test_initial_df, pd.DataFrame(predictions_df).rename({predicted_column: 'predicted_' + predicted_column}, axis=1)], axis=1)
+    else:
+        test_predictions_df = pd.concat([x_test_initial_df, y_test_initial_df, pd.DataFrame(predictions_df).rename({predicted_column: 'predicted_' + predicted_column}, axis=1)], axis=1)
+
+    return test_predictions_df, metric, score

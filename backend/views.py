@@ -1,11 +1,14 @@
 import os
+import base64
 import automl_backend
+from utility_functions import files_loading, files_storing
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from rest_framework import status
 from django.http.response import JsonResponse
-from django.http import HttpResponse
-from .models import FileFormTrain, FileFormTest, TrainResults, Prediction, TestResults
+from django.http import HttpResponse, FileResponse
+from .models import FileFormTrain, FileFormTest, TrainResults, TestResults
+
 import sys
 sys.path.append("..")
 
@@ -28,21 +31,13 @@ def train(request):
         dataset_name = file_name[:-4]
 
         path = '/odinstorage/automl_data/datasets/' + dataset_name + '/'
-
-        try:
-            os.mkdir(path)
-        except OSError:
-            pass
-
-        with open(path + file_name, 'wb+') as written_file:
-            for chunk in loaded_file.chunks():
-                written_file.write(chunk)
+        files_storing.create_folder_store_train_data(
+            path, file_name, loaded_file)
 
         target_column = request.POST.dict()["target_column"]
         task_type = request.POST.dict()["task_type"]
-
         print("train", dataset_name, target_column, task_type)
-        
+
         automl = automl_backend.AutoML(
             "train", dataset_name, target_column, task_type, 2, None)
         metric, score = automl.train()
@@ -68,43 +63,32 @@ def test(request):
     if form.is_valid():
         loaded_file = request.FILES['file']
         file_name = loaded_file.name
-        dataset_name = request.POST.dict()['dataset_name']    
+        dataset_name = request.POST.dict()['dataset_name']
 
         path = '/odinstorage/automl_data/datasets/' + dataset_name + '/'
-
-        try:
-            os.mkdir(path)
-        except OSError:
-            pass
-
-        with open(path + file_name, 'wb+') as written_file:
-            for chunk in loaded_file.chunks():
-                written_file.write(chunk)
+        files_storing.create_folder_store_train_data(
+            path, file_name, loaded_file)
 
         target_column = request.POST.dict()["target_column"]
         task_type = request.POST.dict()["task_type"]
         test_dataset_name = file_name[:-4]
-
-        print("test", task_type, dataset_name, test_dataset_name, target_column)
+        print("test", task_type, dataset_name,
+              test_dataset_name, target_column)
 
         automl = automl_backend.AutoML(
             "test", dataset_name, target_column, task_type, 2, test_dataset_name)
         predictions, metric, score = automl.predict()
-        
+
         print(metric, score)
+        results_path, last_subfolder = files_storing.store_test_with_predictions(
+            dataset_name, target_column, predictions)
+        test_with_predictions_encoded = files_loading.load_test_with_predictions(
+            results_path, last_subfolder)
 
-        predictions_obj = []
-
-        for i, prediction in enumerate(predictions):
-            j = i + 1
-
-            prediction_obj = Prediction(prediction, j)
-            predictions_obj.append(prediction_obj.__dict__)
-
-        test_results = TestResults(metric, score, predictions_obj)
+        test_results = TestResults(score, test_with_predictions_encoded)
 
         return JsonResponse(test_results.__dict__, status=status.HTTP_200_OK)
-        
+
     else:
         print('invalid form')
         error_message = {'error': 'wrong request format'}

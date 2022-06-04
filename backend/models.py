@@ -1,5 +1,6 @@
 from django import forms
 from django.db import models
+from django.http import FileResponse
 
 
 class FileFormTrain(forms.Form):
@@ -28,7 +29,6 @@ class Prediction():
 
 
 class TestResults():
-    def __init__(self, metric, score, predictions):
-        self.metric = metric
+    def __init__(self, score, predictions):
         self.score = score
-        self.predictions = predictions
+        self.file = predictions

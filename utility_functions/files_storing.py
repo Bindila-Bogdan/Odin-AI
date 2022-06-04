@@ -138,3 +138,24 @@ def serialize_param_space(folder_name, param_space_name, param_space):
 
     with open(file_name, 'wb') as f:
         pickle.dump(param_space, f)
+
+
+def create_folder_store_train_data(path, file_name, loaded_file):
+    try:
+        os.mkdir(path)
+    except OSError:
+        pass
+
+    with open(path + file_name, 'wb+') as written_file:
+        for chunk in loaded_file.chunks():
+            written_file.write(chunk)
+
+
+def store_test_with_predictions(dataset_name, target_column, predictions):
+    results_path = '/odinstorage/automl_data/testing_results/' + dataset_name + '/' + target_column
+    subfolders = os.listdir(results_path)
+    last_subfolder = str(max([int(subfolder_number) for subfolder_number in subfolders]))
+
+    predictions.to_csv(results_path + '/' + last_subfolder + '/' + 'test_with_predictions.csv')
+
+    return results_path, last_subfolder

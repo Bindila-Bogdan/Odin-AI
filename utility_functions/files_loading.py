@@ -1,4 +1,5 @@
 import json
+import base64
 import pickle
 
 import pandas as pd
@@ -92,3 +93,12 @@ def deserialize_param_space(folder_name, model_name):
         param_space = pickle.load(f)
 
     return param_space
+
+
+def load_test_with_predictions(results_path, last_subfolder):
+    with open(results_path + '/' + last_subfolder + '/' + 'test_with_predictions.csv', 'rb') as file:
+        test_with_predictions = file.read()
+
+    test_with_predictions_encoded = base64.b64encode(test_with_predictions).decode('ascii')
+
+    return test_with_predictions_encoded

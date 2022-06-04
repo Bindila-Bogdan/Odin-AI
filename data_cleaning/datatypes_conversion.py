@@ -236,3 +236,23 @@ def failed_data_conversion(test_df, config_dict):
     for column, datatype in datatype_conv_dict.items():
         if test_df[column].dtype not in datatype:
             logging.display('Datatype conversion for test dataset failed', p=0)
+
+
+def find_target_column_type(input_df, target_column):
+    categorical_column = False
+    target_type = input_df[target_column].dtype
+
+    if target_type == 'O':
+        input_df[target_column], converted_to_numeric = object_to_numeric(input_df[target_column])
+    
+    if target_type in ['int64', 'float64'] or converted_to_numeric:
+        unique_ratio = input_df[target_column].nunique() / input_df.shape[0]
+        unique_values_no = input_df[target_column].nunique()
+
+        if unique_ratio < config.CONTINUOUS_THRESHOLD or unique_values_no < config.MIN_UNIQUE_CONTINUOUS_VALUES:
+            categorical_column = True
+
+    elif target_type in ['bool', 'datetime64[ns]', 'O']:
+        categorical_column = True
+
+    return categorical_column

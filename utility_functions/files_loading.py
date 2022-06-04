@@ -102,3 +102,9 @@ def load_test_with_predictions(results_path, last_subfolder):
     test_with_predictions_encoded = base64.b64encode(test_with_predictions).decode('ascii')
 
     return test_with_predictions_encoded
+
+def load_task_type(path):
+    with open(path + 'task_type.txt', 'r') as file:
+        task_type = file.read()
+
+    return task_type

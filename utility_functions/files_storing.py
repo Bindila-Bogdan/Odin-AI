@@ -36,15 +36,19 @@ def gen_config_folders(dataset_name, target_column_name, training):
             '/odinstorage/automl_data/training_results/config_files/' + dataset_name + '/' + target_column_name + '/logs/')
         folders_names.append(
             '/odinstorage/automl_data/training_results/trained_models/' + dataset_name + '/' + target_column_name + '/')
-        folders_names.append('/odinstorage/automl_data/testing_results/' + dataset_name + '/' + target_column_name + '/')
+        folders_names.append('/odinstorage/automl_data/testing_results/' +
+                             dataset_name + '/' + target_column_name + '/')
     else:
-        file_path = '/odinstorage/automl_data/testing_results/' + dataset_name + '/' + target_column_name + '/'
-        folders_names_ = [f for f in os.listdir(file_path) if path.isdir(path.join(file_path, f))]
+        file_path = '/odinstorage/automl_data/testing_results/' + \
+            dataset_name + '/' + target_column_name + '/'
+        folders_names_ = [f for f in os.listdir(
+            file_path) if path.isdir(path.join(file_path, f))]
 
         if len(folders_names_) == 0:
             new_folder_name = '0'
         else:
-            new_folder_name = str(max([int(folder_name) for folder_name in folders_names_]) + 1)
+            new_folder_name = str(max([int(folder_name)
+                                  for folder_name in folders_names_]) + 1)
 
         folders_names.append(
             '/odinstorage/automl_data/testing_results/' + dataset_name + '/' + target_column_name + '/' + new_folder_name + '/')
@@ -107,11 +111,12 @@ def save_preprocessed_dataset(dataset_name, target_column_name, config_name, ver
     if training:
         main_path = '/odinstorage/automl_data/training_results/preprocess_data/'
         x_train_name = main_path + dataset_name + '/' + target_column_name + '/x_train_' + \
-                       config_name + '_' + version_name + '.csv'
+            config_name + '_' + version_name + '.csv'
         x_df.to_csv(x_train_name, index=None)
 
         if store_y:
-            y_train_name = main_path + dataset_name + '/' + target_column_name + '/y_train.csv'
+            y_train_name = main_path + dataset_name + \
+                '/' + target_column_name + '/y_train.csv'
             y_df.to_csv(y_train_name, index=None)
 
     else:
@@ -152,10 +157,41 @@ def create_folder_store_train_data(path, file_name, loaded_file):
 
 
 def store_test_with_predictions(dataset_name, target_column, predictions):
-    results_path = '/odinstorage/automl_data/testing_results/' + dataset_name + '/' + target_column
+    results_path = '/odinstorage/automl_data/testing_results/' + \
+        dataset_name + '/' + target_column
     subfolders = os.listdir(results_path)
-    last_subfolder = str(max([int(subfolder_number) for subfolder_number in subfolders]))
+    last_subfolder = str(max([int(subfolder_number)
+                         for subfolder_number in subfolders]))
 
-    predictions.to_csv(results_path + '/' + last_subfolder + '/' + 'test_with_predictions.csv')
+    predictions.to_csv(results_path + '/' + last_subfolder +
+                       '/' + 'test_with_predictions.csv')
 
     return results_path, last_subfolder
+
+
+def delete_data(dataset_name):
+    dateset_path = '/odinstorage/automl_data/datasets/'
+    testing_data_path = '/odinstorage/automl_data/testing_results/'
+    training_data_path = '/odinstorage/automl_data/training_results/'
+
+    paths = [dateset_path, testing_data_path, training_data_path + 'config_files/',
+             training_data_path + 'preprocess_data/', training_data_path + 'trained_models/']
+    counter = 0
+
+    for path in paths:
+        path_to_delete = path + dataset_name + '/'
+
+        try:
+            shutil.rmtree(path_to_delete)
+            print(f'Deleted {path_to_delete} subfolder')
+            counter += 1
+        except:
+            print(f'{path_to_delete} does not exist')
+            pass
+
+    return counter
+
+
+def store_task_type(path, task_type):
+    with open(path + 'task_type.txt', 'w') as file:
+        file.write(task_type)

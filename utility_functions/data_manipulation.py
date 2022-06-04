@@ -6,15 +6,19 @@ import config
 from . import logging
 
 
-def read_dataset(csv_name):
-    logging.display('0. Dataset reading', p=2)
+def read_dataset(csv_name, disable_logging=False):
+    if not disable_logging:
+        logging.display('0. Dataset reading', p=2)
+
     delimiters = [',', ', ', ';', '; ', '\t']
 
     for i in range(len(delimiters)):
         try:
             input_df = pd.read_csv(csv_name, sep=delimiters[i], na_values=config.MISSING_VALUES)
             if input_df.shape[1] != 1:
-                logging.display('Used delimiter: {}'.format(delimiters[i]), p=4)
+                if not disable_logging:
+                    logging.display('Used delimiter: {}'.format(delimiters[i]), p=4)
+                
                 return input_df
         except parsers.ParserError:
             pass

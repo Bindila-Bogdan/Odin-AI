@@ -232,7 +232,7 @@ def generate_store_params_reduced():
     model_types = [-1, 0]
     construct_features_options = [True, False]
     detect_cont_outliers_options = [True, False]
-    detect_cat_outliers_options = [False, True]
+    detect_cat_outliers_options = [True, False]
 
     params_reduced = {-1: [], 0: []}
 

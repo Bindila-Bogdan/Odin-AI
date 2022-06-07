@@ -1,0 +1,115 @@
+{
+    "add_is_missing": true,
+    "add_text_features": true,
+    "1a": [
+        "region_useless",
+        "unique"
+    ],
+    "2": {
+        "predicted_column": "charges",
+        "classification_task": false
+    },
+    "1c": [
+        "region_missing"
+    ],
+    "3": {
+        "sex": "3e",
+        "smoker": "3e",
+        "region": "3e"
+    },
+    "7c": [],
+    "4": [
+        "sex",
+        "smoker",
+        "region",
+        "region_missing_is_missing"
+    ],
+    "5a": null,
+    "5b": {
+        "removed_columns": [],
+        "outliers_boundaries": {
+            "sex": 0,
+            "smoker": 0,
+            "region": 324.0
+        }
+    },
+    "6a": {
+        "method": "mean",
+        "imputed_values": {
+            "age": 39.222139117427076,
+            "bmi": 30.66345175766642,
+            "children": 1.0957367240089753
+        }
+    },
+    "7d": [
+        {
+            "age": [
+                0.054719294607049676,
+                0,
+                0
+            ],
+            "bmi": [
+                0.2835955670169306,
+                0,
+                0
+            ],
+            "children": [
+                0.9363686100859417,
+                1,
+                0
+            ]
+        },
+        [
+            "age",
+            "bmi_wo_skew",
+            "children_wo_skew"
+        ]
+    ],
+    "6b": {
+        "method": "knn_1",
+        "use_continuous_data": false,
+        "column_type_dict": {
+            "sex": "O",
+            "smoker": "O",
+            "region": "O",
+            "region_missing_is_missing": "int64"
+        }
+    },
+    "7a": {},
+    "8": [
+        true,
+        42,
+        [
+            "region_missing_is_missing"
+        ]
+    ],
+    "removed_columns_wo_var": [],
+    "9a": {
+        "scaler": "StandardScaler"
+    },
+    "9b": {
+        "scale_entire": false,
+        "scaler": "StandardScaler"
+    },
+    "7f": [],
+    "7g": [
+        [
+            "age",
+            "children_wo_skew",
+            "/rev",
+            0.14959781230856667
+        ],
+        [
+            "age",
+            "bmi_wo_skew",
+            "/",
+            0.02705867674715391
+        ],
+        [
+            "age",
+            "bmi_wo_skew",
+            "*",
+            0.06757635951812818
+        ]
+    ]
+}

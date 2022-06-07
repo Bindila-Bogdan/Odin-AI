@@ -1,0 +1,108 @@
+{
+    "add_is_missing": false,
+    "add_text_features": false,
+    "1a": [
+        "unique"
+    ],
+    "2": {
+        "predicted_column": "charges",
+        "classification_task": false
+    },
+    "1c": [
+        "region_missing",
+        "region_missing_2"
+    ],
+    "3": {
+        "sex": "3f",
+        "smoker": "3f",
+        "region": "3f"
+    },
+    "7c": false,
+    "4": [
+        "sex",
+        "smoker",
+        "region"
+    ],
+    "5a": {
+        "method": "three_std",
+        "removed_columns": [],
+        "outliers_boundaries": {
+            "age": [
+                -9223372036854775807,
+                9223372036854775807
+            ],
+            "bmi": [
+                -9223372036854775807,
+                49.06
+            ],
+            "children": [
+                -9223372036854775807,
+                5
+            ]
+        }
+    },
+    "5b": {
+        "removed_columns": [],
+        "outliers_boundaries": {
+            "sex": 0,
+            "smoker": 0,
+            "region": 324.0
+        }
+    },
+    "6a": {
+        "method": "median",
+        "imputed_values": {
+            "age": 39.0,
+            "bmi": 30.305,
+            "children": 1.0
+        }
+    },
+    "7d": [
+        null,
+        null
+    ],
+    "6b": {
+        "method": "mode",
+        "use_continuous_data": true,
+        "modes_dict": {
+            "sex": "male",
+            "smoker": "no",
+            "region": "southeast"
+        }
+    },
+    "7a": {},
+    "8": [
+        false,
+        42,
+        []
+    ],
+    "removed_columns_wo_var": [],
+    "9a": {
+        "scaler": "StandardScaler"
+    },
+    "9b": {
+        "scale_entire": false,
+        "scaler": null
+    },
+    "7f": [],
+    "7g": [
+        [
+            "age",
+            "children",
+            "/rev",
+            0.10833613409158799
+        ],
+        [
+            "age",
+            "bmi",
+            "/",
+            0.08588034301797116
+        ],
+        [
+            "age",
+            "bmi",
+            "*",
+            0.026448400837290793
+        ]
+    ]
+}

@@ -67,13 +67,19 @@ def gen_config_folders(dataset_name, target_column_name, training):
 
 def write_log_file(dataset_name, target_column_name, config_name, version_name):
     file_name = '/odinstorage/automl_data/training_results/config_files/' + dataset_name + '/' + target_column_name + \
-                '/logs/' + config_name + '_' + version_name + '_log.txt'
+                '/logs/'
 
-    with open(file_name, 'w', encoding='utf-8') as log_file:
-        if version_name == '0':
-            log_file.write(config.log_text_1)
-        elif version_name == '1':
-            log_file.write(config.log_text_2)
+    file_names = [file_name + config_name + '_' + version_name + '_log.txt']
+
+    if config_name == '0':
+        file_names.append(file_name + 'general_info_report_text.txt')
+
+    for file_name_ in file_names:
+        with open(file_name_, 'w', encoding='utf-8') as log_file:
+            if version_name == '0':
+                log_file.write(config.log_text_1)
+            elif version_name == '1':
+                log_file.write(config.log_text_2)
 
 
 def file_writer(dataset_name, target_column_name, config_name, version_name, data):
@@ -94,6 +100,11 @@ def file_writer(dataset_name, target_column_name, config_name, version_name, dat
         with open(file_name, 'w') as file:
             file.write(data)
     else:
+        if config_name == '0':
+            with open('/odinstorage/automl_data/training_results/config_files/' + dataset_name + '/' +
+                      target_column_name + '/logs/general_info_report_json.txt', 'w') as json_file:
+                json.dump(data, json_file, indent=4)
+
         with open(file_name, 'w') as json_file:
             json.dump(data, json_file, indent=4)
 
@@ -152,8 +163,7 @@ def create_folder_store_train_data(path, file_name, loaded_file):
         pass
 
     with open(path + file_name, 'wb+') as written_file:
-        for chunk in loaded_file.chunks():
-            written_file.write(chunk)
+        written_file.write(loaded_file)
 
 
 def store_test_with_predictions(dataset_name, target_column, predictions):

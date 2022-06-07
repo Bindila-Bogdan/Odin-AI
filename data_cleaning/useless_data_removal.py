@@ -12,14 +12,14 @@ def useless_columns_removal(input_df):
 
     for column in input_df.columns:
         unique_values = input_df[column].nunique()
-        if unique_values < 1:
+        if unique_values <= 1:
             logging.display('Column {} has zero variance.'.format(column), p=4)
             input_df.drop(column, axis=1, inplace=True)
             removed_columns.append(column)
             deleted = True
         elif (rows_no == input_df[column].nunique()) and (input_df[column].dtype == 'int64') and \
                 (input_df[column].isnull().sum() == 0):
-            logging.display('Column \'{}\' has all values unique.'.format(column), p=4)
+            logging.display('Column {} has all values unique.'.format(column), p=4)
             input_df.drop(column, axis=1, inplace=True)
             removed_columns.append(column)
             deleted = True

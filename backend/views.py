@@ -26,42 +26,51 @@ def train(request):
     """
     
     request_data = JSONParser().parse(request)
-    file_content = request_data['file_content']
-    file_name = request_data['file_name']
-    target_column = request_data['target_column']
+    request_keys = request_data.keys()
 
-    loaded_file = base64.b64decode(file_content)
-    dataset_name = file_name[:-4]
+    if 'file_content' in request_keys and 'file_name' in request_keys and 'target_column' in request_keys:
+        file_content = request_data['file_content']
+        file_name = request_data['file_name']
+        target_column = request_data['target_column']
 
-    path = '/odinstorage/automl_data/datasets/' + dataset_name + '/'
-    files_storing.create_folder_store_train_data(
-        path, file_name, loaded_file)
+        loaded_file = base64.b64decode(file_content)
+        dataset_name = file_name[:-4]
 
-    train_data_set = data_manipulation.read_dataset(path + file_name, True)
-    categorical = datatypes_conversion.find_target_column_type(
-        train_data_set, target_column)
+        path = '/odinstorage/automl_data/datasets/' + dataset_name + '/'
+        files_storing.create_folder_store_train_data(
+            path, file_name, loaded_file)
 
-    try:
-        task_type = request_data["task_type"]
-    except KeyError:
-        if categorical:
-            task_type = 'classification'
+        train_data_set = data_manipulation.read_dataset(path + file_name, True)
+        categorical = datatypes_conversion.find_target_column_type(
+            train_data_set, target_column)
 
-        else:
-            task_type = 'regression'
+        try:
+            task_type = request_data["task_type"]
+        except KeyError:
+            if categorical:
+                task_type = 'classification'
 
-    print("train", dataset_name, target_column, task_type)
+            else:
+                task_type = 'regression'
 
-    automl = automl_backend.AutoML(
-        "train", dataset_name, target_column, task_type, 2, None)
-    metric, score = automl.train()
+        print("train", dataset_name, target_column, task_type)
 
-    path_ = '/odinstorage/automl_data/training_results/config_files/' + \
-        dataset_name + '/' + target_column + '/'
-    files_storing.store_task_type(path_, task_type)
-    train_results = TrainResults(metric, score)
+        automl = automl_backend.AutoML(
+            "train", dataset_name, target_column, task_type, 2, None)
+        metric, score = automl.train()
 
-    return JsonResponse(train_results.__dict__, status=status.HTTP_200_OK)
+        path_ = '/odinstorage/automl_data/training_results/config_files/' + \
+            dataset_name + '/' + target_column + '/'
+        files_storing.store_task_type(path_, task_type)
+        train_results = TrainResults(metric, score)
+
+        return JsonResponse(train_results.__dict__, status=status.HTTP_200_OK)
+    
+    else:
+        print('invalid form')
+        error_message = {'error': 'wrong request format'}
+
+        return JsonResponse(error_message, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
@@ -70,21 +79,26 @@ def test(request):
     Predicts the target for received test data set.
     """
 
-    form = FileFormTest(request.POST, request.FILES)
+    request_data = JSONParser().parse(request)
+    request_keys = request_data.keys()
 
-    if form.is_valid():
-        loaded_file = request.FILES['file']
-        file_name = loaded_file.name
-        dataset_name = request.POST.dict()['dataset_name']
+    if 'file_content' in request_keys and 'file_name' in request_keys and 'target_column' in request_keys and 'train_file_name' in request_keys:
+        file_content = request_data['file_content']
+        file_name = request_data['file_name']
+        train_file_name = request_data['train_file_name']
+        target_column = request_data['target_column']
+
+
+        loaded_file = base64.b64decode(file_content)
+        dataset_name = train_file_name[:-4]
+
 
         path = '/odinstorage/automl_data/datasets/' + dataset_name + '/'
         files_storing.create_folder_store_train_data(
             path, file_name, loaded_file)
 
-        target_column = request.POST.dict()["target_column"]
-
         try:
-            task_type = request.POST.dict()["task_type"]
+            task_type = request_data["task_type"]
         except KeyError:
             path_ = '/odinstorage/automl_data/training_results/config_files/' + \
                 dataset_name + '/' + target_column + '/'

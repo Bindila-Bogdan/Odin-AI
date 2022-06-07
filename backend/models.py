@@ -6,6 +6,7 @@ class TrainResults():
         self.metric = metric
         self.score = score
 
+
 class TestResults():
     def __init__(self, score, predictions):
         self.score = score

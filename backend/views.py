@@ -33,7 +33,7 @@ def train(request):
     loaded_file = base64.b64decode(file_content)
     dataset_name = file_name[:-4]
 
-    path = './automl_data/datasets/' + dataset_name + '/'
+    path = '/odinstorage/automl_data/datasets/' + dataset_name + '/'
     files_storing.create_folder_store_train_data(
         path, file_name, loaded_file)
 
@@ -56,7 +56,7 @@ def train(request):
         "train", dataset_name, target_column, task_type, 2, None)
     metric, score = automl.train()
 
-    path_ = './automl_data/training_results/config_files/' + \
+    path_ = '/odinstorage/automl_data/training_results/config_files/' + \
         dataset_name + '/' + target_column + '/'
     files_storing.store_task_type(path_, task_type)
     train_results = TrainResults(metric, score)
@@ -77,7 +77,7 @@ def test(request):
         file_name = loaded_file.name
         dataset_name = request.POST.dict()['dataset_name']
 
-        path = './automl_data/datasets/' + dataset_name + '/'
+        path = '/odinstorage/automl_data/datasets/' + dataset_name + '/'
         files_storing.create_folder_store_train_data(
             path, file_name, loaded_file)
 
@@ -86,7 +86,7 @@ def test(request):
         try:
             task_type = request.POST.dict()["task_type"]
         except KeyError:
-            path_ = './automl_data/training_results/config_files/' + \
+            path_ = '/odinstorage/automl_data/training_results/config_files/' + \
                 dataset_name + '/' + target_column + '/'
             task_type = files_loading.load_task_type(path_)
 
@@ -122,7 +122,7 @@ def delete_data(request):
     if 'dataset_name' in parsed_request.keys():
         dataset_name = parsed_request['dataset_name']
 
-        if dataset_name not in os.listdir('./automl_data/datasets/'):
+        if dataset_name not in os.listdir('/odinstorage/automl_data/datasets/'):
             return JsonResponse({'error': f'{dataset_name} data set does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
         if files_storing.delete_data(dataset_name) == 5:

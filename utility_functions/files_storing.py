@@ -179,6 +179,14 @@ def store_test_with_predictions(dataset_name, target_column, predictions):
     return results_path, last_subfolder
 
 
+def store_features_report(dataset_name, target_column, report_name, outlier_missing_data):
+    path = '/odinstorage/automl_data/training_results/config_files/{}/{}/{}.csv'
+    filled_path = path.format(dataset_name, target_column, report_name)
+
+    outlier_missing_data.to_csv(filled_path)
+
+    return filled_path
+
 def delete_data(dataset_name):
     dateset_path = '/odinstorage/automl_data/datasets/'
     testing_data_path = '/odinstorage/automl_data/testing_results/'
@@ -205,3 +213,7 @@ def delete_data(dataset_name):
 def store_task_type(path, task_type):
     with open(path + 'task_type.txt', 'w') as file:
         file.write(task_type)
+
+def store_feature_importance_img(dataset_name, target_column, plot):
+    path = '/odinstorage/automl_data/training_results/config_files/{}/{}/feature_importance.png'
+    plot.figure.savefig(path.format(dataset_name, target_column), bbox_inches='tight',pad_inches = 0.1)

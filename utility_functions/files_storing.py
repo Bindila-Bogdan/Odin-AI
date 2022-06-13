@@ -183,7 +183,7 @@ def store_features_report(dataset_name, target_column, report_name, outlier_miss
     path = '/odinstorage/automl_data/training_results/config_files/{}/{}/{}.csv'
     filled_path = path.format(dataset_name, target_column, report_name)
 
-    outlier_missing_data.to_csv(filled_path)
+    outlier_missing_data.to_csv(filled_path, index=None)
 
     return filled_path
 

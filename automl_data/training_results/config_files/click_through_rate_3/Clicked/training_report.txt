@@ -1,0 +1,81 @@
+*Details of AutoML training run*
+
+*Information regarding config search*
+*****************************************************
+Folds number: 10
+Metric: f1_weighted
+Number of configurations tried: 14
+Scores:
+{
+    "log_reg": [
+        "f1_weighted: 0.9672557722386171",
+        "config: 12_0"
+    ],
+    "rfc": [
+        "f1_weighted: 0.9647468478619243",
+        "config: 7_0"
+    ],
+    "gbc": [
+        "f1_weighted: 0.963483708173853",
+        "config: 11_1"
+    ],
+    "mlpc": [
+        "f1_weighted: 0.9533879460922765",
+        "config: 2_0"
+    ]
+}
+Time required by searching: 75.9815 s
+
+*Information regarding optimization*
+*****************************************************
+Folds number: 10
+Max optimization time: 60 s
+Early stopping for linear models after 50 iterations
+{
+    "log_reg": [
+        "optimization time: 5.6108 s",
+        "f1_weighted: 0.9685697844796579"
+    ],
+    "rfc": [
+        "optimization time: 18.7844 s",
+        "f1_weighted: 0.9597777625472435"
+    ],
+    "gbc": [
+        "optimization time: 18.5812 s",
+        "f1_weighted: 0.9648076023067582"
+    ],
+    "mlpc": [
+        "optimization time: 20.0008 s",
+        "f1_weighted: 0.9534887260867368"
+    ]
+}
+Time required by optimization: 62.9772 s
+
+*Information regarding ensembling*
+*****************************************************
+Folds number:10
+Meta-model for standard stacking: log_reg
+Meta-model for prob-based stacking: ridge_reg
+Iterations for optimizing standard meta-model: 10
+Iterations for optimizing prob based meta-model: None
+*****************************************************
+Standard stacking using 3 models
+f1_weighted: 0.9672392580391665
+Stacking time: 9.4383 s
+*****************************************************
+Prob based stacking using 3 models
+f1_weighted: 0.9647444954130288
+Stacking time: 8.2524 s
+*****************************************************
+Standard stacking using 2 models
+f1_weighted: 0.9660007707907434
+Stacking time: 7.0534 s
+*****************************************************
+Prob based stacking using 2 models
+f1_weighted: 0.9647444954130288
+Stacking time: 6.0641 s
+*****************************************************
+Final f1_weighted: 0.9685697844796579
+Best performance is obtained without stacking
+Best model is log_reg
+Time required by stacking: 30.8162 s

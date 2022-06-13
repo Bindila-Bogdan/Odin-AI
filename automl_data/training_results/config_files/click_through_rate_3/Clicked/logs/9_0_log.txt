@@ -1,0 +1,142 @@
+
+0. Dataset reading
+		Used delimiter: ,
+		Initial shape of the dataset: (796, 10)
+
+1. Removing duplicated rows and useless columns
+	1.a. Remove useless columns
+		There are not useless columns.
+	1.b. Remove duplicated rows
+		The dataset does not contain duplicated rows.
+
+2. Split dataset in training and testing
+		Test percentage = 0.0
+		Random state = 42
+		Output column = Clicked
+	1.c. Remove columns with missing data (after splitting)
+		Every column has < 30% missing data.
+
+3. Data types conversion for each column
+		Code meanings:
+			3a: bool -> int
+			3b: int -> datetime
+			3c: object -> datetime
+			3d: object -> int/float
+			3e: text normalization
+			3f: without text normalization
+		{
+		    "Ad topic line": "3f",
+		    "City": "3f",
+		    "Country": "3f",
+		    "Timestamp": "3c"
+		}
+
+4. Dataset splitting based on categorical columns
+		Used threshold = 0.002
+		Categorical columns:            Datatype:            Ratio unique values:
+		Ad topic line                   object               1.0
+		City                            object               0.9711055276381909
+		Male                            int64                0.002512562814070352
+		Country                         object               0.2889447236180904
+		Timestamp                       datetime64[ns]       0.9962311557788944
+		 
+		Continuous columns:             Datatype:            Ratio unique values:
+		Daily site usage                float64              0.9195979899497487
+		Age                             int64                0.05402010050251256
+		Area income                     float64              1.0
+		Daily internet usage            float64              0.9685929648241206
+
+5. Outliers detection
+	5.a. Outliers detection in continuous columns
+		three_std is the used method for outliers detection
+		Column name:                    outliers    missing values:
+		Daily site usage                0           0
+		Age                             0           0
+		Area income                     3           0
+		Daily internet usage            0           0
+		Lower and upper boundaries for outliers:
+		{
+		    "Daily site usage": [
+		        -9223372036854775807,
+		        9223372036854775807
+		    ],
+		    "Age": [
+		        -9223372036854775807,
+		        9223372036854775807
+		    ],
+		    "Area income": [
+		        15879.1,
+		        9223372036854775807
+		    ],
+		    "Daily internet usage": [
+		        -9223372036854775807,
+		        9223372036854775807
+		    ]
+		}
+	5.b. Outliers detection in categorical columns
+		Threshold for detecting categorical that will be verified for outliers: 0.1
+		winsorization for 1st percentile is the method used for outliers detection
+		Column name:                    outliers    missing values:
+		Male                            0           0
+		Timestamp                       0           0
+		Lower boundary for outliers:
+		{
+		    "Male": 0,
+		    "Timestamp": 1.0
+		}
+
+6. Imputation of missing values
+	6.a. Imputation for continuous data
+		kNN with 5 neighbors is used for imputation
+	6.b. Imputation for categorical data
+		continuous data was used: True
+		kNN with 1 neighbors is used for imputation
+
+7. Feature engineering
+	7.a. Generate cyclical date features
+		Column name: Timestamp with max_month = 11 and max_day = 30
+	7.b. Text feature engineering applied
+
+8. Encoding categorical features
+		Column type                     column name                     encoding type
+		
+		Ad topic line trying with min_df=0.01 max_df=0.99
+		for Ad topic line tf-idf with min_df=0.01 max_df=0.99
+		
+		City trying with min_df=0.01 max_df=0.99
+		for City tf-idf with min_df=0.01 max_df=0.99
+		
+		Country trying with min_df=0.01 max_df=0.99
+		for Country tf-idf with min_df=0.01 max_df=0.99
+		longtext                        Ad topic line                   1
+		longtext                        City                            1
+		num                             Male                            2
+		longtext                        Country                         1
+		svd                                                             Ad topic line
+		svd                                                             City
+		svd                                                             Country
+		Moving column Ad topic line_long_text_24 from categorical to continuous
+	
+Remove columns without variation
+		Column Timestamp_year has zero variance.
+
+9. Scaling features
+	9.a. Scaling continuous features
+		Scaler type is StandardScaler
+	9.b. Scaling categorical features
+		Number of scalable columns: 1
+		Scale entire categorical dataframe: False
+		Scaler type is StandardScaler
+	7.f. Feature selection
+		Discarded features are: ['Ad topic line_long_text_alliance', 'Ad topic line_long_text_approach', 'Ad topic line_long_text_area', 'Ad topic line_long_text_array', 'Ad topic line_long_text_balanced', 'Ad topic line_long_text_benchmark', 'Ad topic line_long_text_buffered', 'Ad topic line_long_text_customer', 'Ad topic line_long_text_decentralized', 'Ad topic line_long_text_definition', 'Ad topic line_long_text_distributed', 'Ad topic line_long_text_encryption', 'Ad topic line_long_text_explicit', 'Ad topic line_long_text_extranet', 'Ad topic line_long_text_face', 'Ad topic line_long_text_flexibility', 'Ad topic line_long_text_global', 'Ad topic line_long_text_grass', 'Ad topic line_long_text_hardware', 'Ad topic line_long_text_hierarchy', 'Ad topic line_long_text_high', 'Ad topic line_long_text_homogeneous', 'Ad topic line_long_text_horizontal', 'Ad topic line_long_text_human', 'Ad topic line_long_text_instruction', 'Ad topic line_long_text_intangible', 'Ad topic line_long_text_key', 'Ad topic line_long_text_level', 'Ad topic line_long_text_management', 'Ad topic line_long_text_model', 'Ad topic line_long_text_network', 'Ad topic line_long_text_neural', 'Ad topic line_long_text_neutral', 'Ad topic line_long_text_next', 'Ad topic line_long_text_object', 'Ad topic line_long_text_portal', 'Ad topic line_long_text_pre', 'Ad topic line_long_text_public', 'Ad topic line_long_text_real', 'Ad topic line_long_text_realigned', 'Ad topic line_long_text_reciprocal', 'Ad topic line_long_text_resource', 'Ad topic line_long_text_robust', 'Ad topic line_long_text_service', 'Ad topic line_long_text_sharable', 'Ad topic line_long_text_source', 'Ad topic line_long_text_state', 'Ad topic line_long_text_strategy', 'Ad topic line_long_text_synergy', 'Ad topic line_long_text_systemic', 'Ad topic line_long_text_tolerance', 'Ad topic line_long_text_triple', 'Ad topic line_long_text_uniform', 'Ad topic line_long_text_up', 'Ad topic line_long_text_upward', 'Ad topic line_long_text_volatile', 'Ad topic line_long_text_worthy', 'Country_long_text_arab', 'Country_long_text_netherlands', 'Country_long_text_of', 'Country_long_text_republic', 'Country_long_text_samoa']
+	7.g. Feature construction
+		(Daily internet usage Ad topic line_long_text_total *) => new_feat_0
+		(Daily internet usage Ad topic line_long_text_networked *) => new_feat_1
+		(Daily internet usage Ad topic line_long_text_modular *) => new_feat_2
+
+9. Scaling features
+	9.a. Scaling continuous features
+		Scaler type is StandardScaler
+		
+Final shape of the training dataset: (796, 174)		
+Time required for preparing the training dataset: 5.638747 s

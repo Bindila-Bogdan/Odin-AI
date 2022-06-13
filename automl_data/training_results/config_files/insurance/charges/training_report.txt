@@ -1,0 +1,63 @@
+*Details of AutoML training run*
+
+*Information regarding config search*
+*****************************************************
+Folds number: 5
+Metric: r2
+Number of configurations tried: 52
+Scores:
+{
+    "ridge_reg": [
+        "r2: 0.7393597426381997",
+        "config: 48_0"
+    ],
+    "rfr": [
+        "r2: 0.8411497316997256",
+        "config: 33_0"
+    ],
+    "gbr": [
+        "r2: 0.8240033535006244",
+        "config: 5_1"
+    ]
+}
+Time required by searching: 60.9225 s
+
+*Information regarding optimization*
+*****************************************************
+Folds number: 5
+Max optimization time: 60 s
+Early stopping for linear models after 50 iterations
+{
+    "ridge_reg": [
+        "optimization time: 24.4552 s",
+        "r2: 0.7393908133136322"
+    ],
+    "rfr": [
+        "optimization time: 17.9892 s",
+        "r2: 0.8565219933282806"
+    ],
+    "gbr": [
+        "optimization time: 17.972 s",
+        "r2: 0.849357367143925"
+    ]
+}
+Time required by optimization: 60.4163 s
+
+*Information regarding ensembling*
+*****************************************************
+Folds number:5
+Meta-model for standard stacking: ridge_reg
+Iterations for optimizing standard meta-model: 20
+*****************************************************
+Standard stacking using 3 models
+r2: 0.8557741709481859
+Stacking time: 2.3574 s
+*****************************************************
+Standard stacking using 2 models
+r2: 0.8564765599514803
+Stacking time: 2.2326 s
+*****************************************************
+Final r2: 0.8565219933282806
+Best performance is obtained without stacking
+Best model is rfr
+Time required by stacking: 4.5981 s

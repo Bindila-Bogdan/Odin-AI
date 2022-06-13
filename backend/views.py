@@ -33,6 +33,7 @@ def train(request):
         file_content = request_data['file_content']
         file_name = request_data['file_name']
         target_column = request_data['target_column']
+        language = request_data['language']
 
         loaded_file = base64.b64decode(file_content)
         dataset_name = file_name[:-4]
@@ -66,7 +67,7 @@ def train(request):
             files_storing.store_task_type(path_, task_type)
 
             reporting_info = reporting.create_general_info_report(
-                dataset_name, target_column)
+                dataset_name, target_column, language)
             [sizes, useless_columns, duplicated_rows,
                 outlier_missing_data] = reporting_info
 
@@ -76,7 +77,7 @@ def train(request):
                 features_report_path)
 
             features_importances.compute_feature_importance(
-                dataset_name, target_column)
+                dataset_name, target_column, language)
             features_importances_img = files_loading.load_feature_importance_img(
                 dataset_name, target_column)
 
@@ -136,6 +137,7 @@ def test(request):
             predictions, metric, score = automl.predict()
 
             print(metric, score)
+            print(predictions)
             results_path, last_subfolder = files_storing.store_test_with_predictions(
                 dataset_name, target_column, predictions)
             test_with_predictions_encoded = files_loading.load_test_with_predictions(

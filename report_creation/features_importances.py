@@ -39,18 +39,27 @@ def separate_columns(x_train, cont_columns, cat_columns):
     for column in current_all_columns:
         for cont_column in cont_columns:
             if cont_column in column and '_is_missing' not in column:
-                current_cont_columns.append(column)
-                current_all_columns_copy.remove(column)
+                try:
+                    current_all_columns_copy.remove(column)
+                    current_cont_columns.append(column)
+                except:
+                    pass
 
             elif '_is_missing' in column:
-                current_cat_columns.append(column)
-                current_all_columns_copy.remove(column)
+                try:
+                    current_all_columns_copy.remove(column)
+                    current_cat_columns.append(column)
+                except:
+                    pass
 
     for column in current_all_columns:
         for cat_column in cat_columns:
             if cat_column in column:
-                current_cat_columns.append(column)
-                current_all_columns_copy.remove(column)
+                try:
+                    current_all_columns_copy.remove(column)
+                    current_cat_columns.append(column)
+                except:
+                    pass
 
     current_cont_columns.extend(current_all_columns_copy)
 
@@ -94,7 +103,10 @@ def post_process_importances(importances, new_features_mapping, multiplier=1):
         for created_feature in new_features_mapping:
             if feature == created_feature:
                 for parrent_feature in new_features_mapping[created_feature]:
-                    overall_features_importances[parrent_feature] += overall_features_importances[feature]
+                    for existing_feature in overall_features_importances.keys():
+                        if parrent_feature in existing_feature:
+                            overall_features_importances[existing_feature] += overall_features_importances[feature]
+                            break
 
     return overall_features_importances
 
@@ -113,25 +125,33 @@ def aggregate_feature_importance(all_columns, features_importances):
     return aggregated_features_importances
 
 
-def plot_feature_importance(aggregated_features_importances, dataset_name, target_column):
+def plot_feature_importance(aggregated_features_importances, dataset_name, target_column, language):
+    if language == 'ro':
+        importance = 'importanță procentuală'
+        columns = 'nume coloană'
+
+    else:
+        importance = 'percentage importance'
+        columns = 'column name'
+
     feature_importance_df = pd.DataFrame(
-        aggregated_features_importances, index=['percentage importance'])
+        aggregated_features_importances, index=[importance])
     feature_importance_df = feature_importance_df.T.reset_index().rename(
-        {'index': 'column name'}, axis=1).sort_values('percentage importance', ascending=False)
-    feature_importance_df['percentage importance'] = feature_importance_df['percentage importance'] / \
-        feature_importance_df['percentage importance'].sum()
-    feature_importance_df['percentage importance'] = feature_importance_df['percentage importance'] * 100
+        {'index': columns}, axis=1).sort_values(importance, ascending=False)
+    feature_importance_df[importance] = feature_importance_df[importance] / \
+        feature_importance_df[importance].sum()
+    feature_importance_df[importance] = feature_importance_df[importance] * 100
 
-    plt.figure(figsize=(16, feature_importance_df.shape[0]))
+    plt.figure(figsize=(8, feature_importance_df.shape[0]))
 
-    plot = sns.barplot(data=feature_importance_df, y='column name', x='percentage importance', palette=[
+    plot = sns.barplot(data=feature_importance_df, y=columns, x=importance, palette=[
         '#203568'] * 3 + ['#01adee'] * 3 + ['#656b7d'] * 1000)
 
     files_storing.store_feature_importance_img(
         dataset_name, target_column, plot)
 
 
-def compute_feature_importance(dataset_name, target_column):
+def compute_feature_importance(dataset_name, target_column, language):
     extracted_data, loaded_data = extract_needed_info(
         dataset_name, target_column)
     [cat_columns, cont_columns, all_columns, features_mapping] = extracted_data
@@ -197,4 +217,4 @@ def compute_feature_importance(dataset_name, target_column):
             all_columns, features_importances)
 
     plot_feature_importance(
-        aggregated_features_importances, dataset_name, target_column)
+        aggregated_features_importances, dataset_name, target_column, language)

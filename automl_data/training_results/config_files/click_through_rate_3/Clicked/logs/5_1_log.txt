@@ -1,0 +1,145 @@
+
+0. Dataset reading
+		Used delimiter: ,
+		Initial shape of the dataset: (796, 10)
+
+1. Removing duplicated rows and useless columns
+	1.a. Remove useless columns
+		There are not useless columns.
+	1.b. Remove duplicated rows
+		The dataset does not contain duplicated rows.
+
+2. Split dataset in training and testing
+		Test percentage = 0.0
+		Random state = 42
+		Output column = Clicked
+	1.c. Remove columns with missing data (after splitting)
+		Every column has < 30% missing data.
+
+3. Data types conversion for each column
+		Code meanings:
+			3a: bool -> int
+			3b: int -> datetime
+			3c: object -> datetime
+			3d: object -> int/float
+			3e: text normalization
+			3f: without text normalization
+		{
+		    "Ad topic line": "3f",
+		    "City": "3f",
+		    "Country": "3f",
+		    "Timestamp": "3c"
+		}
+
+4. Dataset splitting based on categorical columns
+		Used threshold = 0.002
+		Categorical columns:            Datatype:            Ratio unique values:
+		Ad topic line                   object               1.0
+		City                            object               0.9711055276381909
+		Male                            int64                0.002512562814070352
+		Country                         object               0.2889447236180904
+		Timestamp                       datetime64[ns]       0.9962311557788944
+		 
+		Continuous columns:             Datatype:            Ratio unique values:
+		Daily site usage                float64              0.9195979899497487
+		Age                             int64                0.05402010050251256
+		Area income                     float64              1.0
+		Daily internet usage            float64              0.9685929648241206
+
+5. Outliers detection
+	5.a. Outliers detection in continuous columns
+		three_std is the used method for outliers detection
+		Column name:                    outliers    missing values:
+		Daily site usage                0           0
+		Age                             0           0
+		Area income                     3           0
+		Daily internet usage            0           0
+		Lower and upper boundaries for outliers:
+		{
+		    "Daily site usage": [
+		        -9223372036854775807,
+		        9223372036854775807
+		    ],
+		    "Age": [
+		        -9223372036854775807,
+		        9223372036854775807
+		    ],
+		    "Area income": [
+		        15879.1,
+		        9223372036854775807
+		    ],
+		    "Daily internet usage": [
+		        -9223372036854775807,
+		        9223372036854775807
+		    ]
+		}
+	5.b. Without outliers detection in categorical columns
+
+6. Imputation of missing values
+	6.a. Imputation for continuous data
+		median is used for imputation
+		Imputed values:
+		{
+		    "Daily site usage": 68.215,
+		    "Age": 35.0,
+		    "Area income": 57756.89,
+		    "Daily internet usage": 183.45499999999998
+		}
+	6.b. Imputation for categorical data
+		continuous data was used: True
+		kNN with 1 neighbors is used for imputation
+
+7. Feature engineering
+	7.a. Generate cyclical date features
+		Column name: Timestamp with max_month = 11 and max_day = 30
+	7.b. Text feature engineering applied
+		7.e. Reducing dimensionality of tf_idf result
+
+8. Encoding categorical features
+		Column type                     column name                     encoding type
+		
+		Ad topic line trying with min_df=0.01 max_df=0.99
+		for Ad topic line tf-idf with min_df=0.01 max_df=0.99
+		tf_idf for Ad topic line has initially 202 columns
+		Try 101 components. Explained variance: 0.7639841304740289
+		Try 151 components. Explained variance: 0.9489508874552484
+		Explained variance for Ad topic line: 0.9489508874552484
+		
+		City trying with min_df=0.01 max_df=0.99
+		for City tf-idf with min_df=0.01 max_df=0.99
+		tf_idf for City has initially 7 columns
+		Try 4 components. Explained variance: 0.62779838564516
+		Try 5 components. Explained variance: 0.7667832550391276
+		Try 6 components. Explained variance: 0.9008834128040171
+		Explained variance for City: 0.9008834128040171
+		
+		Country trying with min_df=0.01 max_df=0.99
+		for Country tf-idf with min_df=0.01 max_df=0.99
+		tf_idf for Country has initially 15 columns
+		Try 8 components. Explained variance: 0.7375852035027464
+		Try 11 components. Explained variance: 0.8819077077590112
+		Try 13 components. Explained variance: 0.9596127788381922
+		Explained variance for Country: 0.9596127788381922
+		longtext                        Ad topic line                   1
+		longtext                        City                            1
+		num                             Male                            0
+		longtext                        Country                         1
+		svd                                                             Ad topic line
+		svd                                                             City
+		svd                                                             Country
+		Moving column Ad topic line_svd_0 from categorical to continuous
+	
+Remove columns without variation
+		Column Timestamp_year has zero variance.
+
+9. Scaling features
+	9.a. Scaling continuous features
+		Scaler type is StandardScaler
+	9.b. Scaling categorical features
+		Number of scalable columns: 0
+		Scale entire categorical dataframe: True
+		Scaler type is StandardScaler
+	7.g. Feature construction
+		
+Final shape of the training dataset: (796, 180)		
+Time required for preparing the training dataset: 1.081308 s

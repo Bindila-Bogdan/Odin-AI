@@ -1,0 +1,72 @@
+{
+    "add_is_missing": false,
+    "add_text_features": false,
+    "1a": [],
+    "2": {
+        "predicted_column": "Clicked",
+        "classification_task": true
+    },
+    "1c": [],
+    "3": {
+        "Ad topic line": "3e",
+        "City": "3e",
+        "Country": "3e",
+        "Timestamp": "3c"
+    },
+    "7c": false,
+    "4": [
+        "Ad topic line",
+        "City",
+        "Male",
+        "Country",
+        "Timestamp"
+    ],
+    "5a": null,
+    "5b": null,
+    "6a": {
+        "method": "kNN_5",
+        "imputed_values": {}
+    },
+    "7d": [
+        null,
+        null
+    ],
+    "6b": {
+        "method": "knn_1",
+        "use_continuous_data": false,
+        "column_type_dict": {
+            "Ad topic line": "O",
+            "City": "O",
+            "Male": "int64",
+            "Country": "O",
+            "Timestamp": "datetime64[ns]"
+        }
+    },
+    "7a": {
+        "Timestamp": [
+            11,
+            30
+        ]
+    },
+    "8": [
+        true,
+        42,
+        [
+            "Male"
+        ]
+    ],
+    "removed_columns_wo_var": [
+        "Timestamp_year"
+    ],
+    "9a": {
+        "scaler": "StandardScaler"
+    },
+    "9b": {
+        "scale_entire": true,
+        "scaler": "StandardScaler"
+    },
+    "7f": [
+        "Ad topic line_long_text_focused"
+    ],
+    "7g": null
+}

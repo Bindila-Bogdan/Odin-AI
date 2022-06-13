@@ -3,23 +3,51 @@ import pandas as pd
 from utility_functions import files_loading
 
 
-def get_uselss_data(index, line, txt_report, useless_columns, duplicated_rows):
+def get_uselss_data(index, line, txt_report, useless_columns, duplicated_rows, language):
     if '1.a. Remove useless columns' in line:
         aux_index = index + 1
 
         while '1.b. Remove duplicated rows' not in txt_report[aux_index]:
-            useless_columns.append(
-                txt_report[aux_index].replace('\n', '').lstrip())
+            current_text = txt_report[aux_index].replace('\n', '').lstrip()
+
+            if language == 'ro':
+                if 'There are not useless columns.' in current_text:
+                    current_text = 'Nu există coloane inutile.'
+                
+                elif 'has zero variance.' in current_text:
+                    column_of_interest = current_text.replace(' has zero variance.', '')[7:]
+                    current_text = 'Coloana {} are toate valorile identice.'.format(column_of_interest)
+
+                elif 'has all values unique.' in current_text:
+                    column_of_interest = current_text.replace(' has all values unique.', '')[7:]
+                    current_text = 'Coloana {} are toate valorile unice.'.format(column_of_interest)
+
+            useless_columns.append(current_text)
             aux_index += 1
 
         else:
-            duplicated_rows.append(txt_report[aux_index +
-                                              1].replace(':', ' is').lstrip().replace('\n', ''))
+            current_text = txt_report[aux_index +
+                                      1].replace(':', ' is').lstrip().replace('\n', '')
+
+            if language == 'ro':
+                if 'does not contain duplicated rows' in current_text:
+                    current_text = 'Setul de date nu conține rânduri duplicate.'
+
+                else:
+                    current_text = 'Numărul de rânduri duplicate este{}'.format(
+                        current_text.split('is')[-1])
+
+            duplicated_rows.append(current_text)
 
     if '1.c. Remove columns with missing data (after splitting)' in line:
         if 'Every column has < 30% missing data.' in txt_report[index + 1]:
-            useless_columns.append(
-                'Columns do not have too many missing values to be insignificant.')
+            if language == 'ro':
+                current_text = 'Coloanele nu au prea multe valori lipsă pentru a fi nesemnificative statistic.'
+
+            else:
+                current_text = 'Columns do not have too many missing values to be statistically insignificant.'
+
+            useless_columns.append(current_text)
 
         else:
             missing_values_columns = [txt_report[index] for index in range(
@@ -28,10 +56,22 @@ def get_uselss_data(index, line, txt_report, useless_columns, duplicated_rows):
                 0][7:] for col in missing_values_columns]
 
             if len(missing_values_columns_) == 1:
-                useless_columns.append('Column {} has too many missing values to be statistically significant.'.format(
-                    missing_values_columns_[0]))
+                if language == 'ro':
+                    current_text = 'Coloana {} are prea multe valori lipsă pentru a fi statistic semnificativă.'
+
+                else:
+                    current_text = 'Column {} has too many missing values to be statistically significant.'
+
+                useless_columns.append(
+                    current_text.format(missing_values_columns_[0]))
             else:
-                useless_columns.append('Columns {} have too many missing values to be statistically significant.'.format(
+                if language == 'ro':
+                    current_text = 'Coloanele {} au prea multe valori lipsă pentru a fi statistic semnificative.'
+
+                else:
+                    current_text = 'Columns {} have too many missing values to be statistically significant.'
+
+                useless_columns.append(current_text.format(
                     ', '.join(missing_values_columns_)).replace('\'', ''))
 
 
@@ -79,7 +119,7 @@ def add_outliers_boundaries(json_report, cont_outlier_missing_data, cat_outlier_
     cont_outliers_boundaries = json_report['5a']['outliers_boundaries']
     cat_outliers_boundaries = json_report['5b']['outliers_boundaries']
 
-    for index, [col_name, outliers_no, missing_no] in enumerate(cont_outlier_missing_data):
+    for index, [col_name, outliers_no, _] in enumerate(cont_outlier_missing_data):
         if outliers_no != '0':
             lower_boundary = cont_outliers_boundaries[col_name][0]
             higher_boundary = cont_outliers_boundaries[col_name][1]
@@ -96,35 +136,42 @@ def add_outliers_boundaries(json_report, cont_outlier_missing_data, cat_outlier_
         else:
             cont_outlier_missing_data[index].extend(['-', '-'])
 
-    for index, [col_name, outliers_no, missing_no] in enumerate(cat_outlier_missing_data):
+    for index, [col_name, outliers_no, _] in enumerate(cat_outlier_missing_data):
         if outliers_no != '0':
-            cat_outlier_missing_data[index].extend([cat_outliers_boundaries[col_name], '-'])
+            cat_outlier_missing_data[index].extend(
+                [cat_outliers_boundaries[col_name], '-'])
 
         else:
             cat_outlier_missing_data[index].extend(['-', '-'])
 
 
-def format_info(sizes, useless_columns, duplicated_rows, cont_outlier_missing_data, cat_outlier_missing_data):
-    sizes = sizes[0] + ' rows x ' + sizes[1] + ' columns'
+def format_info(sizes, useless_columns, duplicated_rows, cont_outlier_missing_data, cat_outlier_missing_data, language):
+    if language == 'ro':
+        sizes = sizes[0] + ' rânduri x ' + sizes[1] + ' coloane'
+        renaming = {0: 'coloană', 1: 'număr valori anormale', 2: 'număr valori lipsă',
+                    3: 'limită inferioară valori normale', 4: 'limită superioară valori normale'}
+
+    else:
+        sizes = sizes[0] + ' rows x ' + sizes[1] + ' columns'
+        renaming = {0: 'colum', 1: 'outliers number', 2: 'missing values number',
+                    3: 'lower limit normal values', 4: 'higher limit normal values'}
+
     useless_columns = '\n'.join(useless_columns)
     duplicated_rows = '\n'.join(duplicated_rows)
-
-    renaming = {0: 'colum', 1: 'outliers number', 2: 'missing values',
-                     3: 'lower outlier boundary', 4: 'higher outlier boundary'}
-
 
     cont_outlier_missing_data = pd.DataFrame(
         cont_outlier_missing_data).rename(renaming, axis=1)
     cat_outlier_missing_data = pd.DataFrame(
         cat_outlier_missing_data).rename(renaming, axis=1)
 
-    outlier_missing_data = pd.concat([cont_outlier_missing_data, cat_outlier_missing_data])
+    outlier_missing_data = pd.concat(
+        [cont_outlier_missing_data, cat_outlier_missing_data])
     outlier_missing_data.index = list(range(outlier_missing_data.shape[0]))
 
     return [sizes, useless_columns, duplicated_rows, outlier_missing_data]
 
 
-def create_general_info_report(dataset_name, target_column):
+def create_general_info_report(dataset_name, target_column, language):
     txt_report, json_report = files_loading.load_intermediary_reports(
         dataset_name, target_column)
 
@@ -139,11 +186,11 @@ def create_general_info_report(dataset_name, target_column):
             sizes = line.split(': ')[-1][1:-2].split(', ')
 
         get_uselss_data(index, line, txt_report,
-                        useless_columns, duplicated_rows)
+                        useless_columns, duplicated_rows, language)
         get_cont_outliers(index, line, txt_report, cont_outlier_missing_data)
         get_cat_outliers(index, line, txt_report, cat_outlier_missing_data)
 
+    add_outliers_boundaries(
+        json_report, cont_outlier_missing_data, cat_outlier_missing_data)
 
-    add_outliers_boundaries(json_report, cont_outlier_missing_data, cat_outlier_missing_data)
-
-    return format_info(sizes, useless_columns, duplicated_rows, cont_outlier_missing_data, cat_outlier_missing_data)
+    return format_info(sizes, useless_columns, duplicated_rows, cont_outlier_missing_data, cat_outlier_missing_data, language)

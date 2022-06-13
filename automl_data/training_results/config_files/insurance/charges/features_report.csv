@@ -1,0 +1,7 @@
+,colum,outliers number,missing values,lower outlier boundary,higher outlier boundary
+0,age,0,0,-,-
+1,bmi,4,0,-,49.06
+2,children,18,0,-,5
+3,sex,0,0,-,-
+4,smoker,0,0,-,-
+5,region,0,0,-,-

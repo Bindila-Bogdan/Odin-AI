@@ -174,7 +174,7 @@ def store_test_with_predictions(dataset_name, target_column, predictions):
                          for subfolder_number in subfolders]))
 
     predictions.to_csv(results_path + '/' + last_subfolder +
-                       '/' + 'test_with_predictions.csv')
+                       '/' + 'test_with_predictions.csv', index=None)
 
     return results_path, last_subfolder
 

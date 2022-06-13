@@ -1,0 +1,147 @@
+
+0. Dataset reading
+		Used delimiter: ,
+		Initial shape of the dataset: (25998, 12)
+
+1. Removing duplicated rows and useless columns
+	1.a. Remove useless columns
+		There are not useless columns.
+	1.b. Remove duplicated rows
+		Number of duplicated rows: 122.
+
+2. Split dataset in training and testing
+		Test percentage = 0.0
+		Random state = 42
+		Output column = Loan default
+	1.c. Remove columns with missing data (after splitting)
+		Every column has < 30% missing data.
+
+3. Data types conversion for each column
+		Code meanings:
+			3a: bool -> int
+			3b: int -> datetime
+			3c: object -> datetime
+			3d: object -> int/float
+			3e: text normalization
+			3f: without text normalization
+		6.a. Creating additional features for text columns
+		{
+		    "Home Ownership": "3e",
+		    "Loan intent": "3e",
+		    "Loan grade": "3e",
+		    "Historical default": "3e"
+		}
+
+4. Dataset splitting based on categorical columns
+		Used threshold = 0.002
+		Categorical columns:            Datatype:            Ratio unique values:
+		Age                             int64                0.0006956252898438708
+		Home Ownership                  object               0.0001545833977430824
+		Years employed                  float64              0.0008115628381511825
+		Loan intent                     object               0.0002318750966146236
+		Loan grade                      object               0.00027052094605039417
+		Historical default              object               7.72916988715412e-05
+		Credit history length           int64                0.0003478126449219354
+		 
+		Continuous columns:             Datatype:            Ratio unique values:
+		Annual income                   int64                0.1414438089349204
+		Loan amount                     int64                0.027438553099397123
+		Interest rate                   float64              0.01290771371154738
+		Loan percent income             float64              0.002975730406554336
+
+5. Outliers detection
+	5.a. Outliers detection in continuous columns
+		three_std is the used method for outliers detection
+		Column name:                    outliers    missing values:
+		Annual income                   424         0
+		Loan amount                     259         0
+		Interest rate                   28          2432
+		Loan percent income             0           0
+		Lower and upper boundaries for outliers:
+		{
+		    "Annual income": [
+		        -9223372036854775807,
+		        174708
+		    ],
+		    "Loan amount": [
+		        -9223372036854775807,
+		        27600
+		    ],
+		    "Interest rate": [
+		        -9223372036854775807,
+		        20.86
+		    ],
+		    "Loan percent income": [
+		        -9223372036854775807,
+		        9223372036854775807
+		    ]
+		}
+	5.b. Outliers detection in categorical columns
+		Threshold for detecting categorical that will be verified for outliers: 0.1
+		winsorization for 1st percentile is the method used for outliers detection
+		Column name:                    outliers    missing values:
+		Age                             0           0
+		Home Ownership                  91          0
+		Years employed                  1           739
+		Loan intent                     2656        0
+		Loan grade                      43          0
+		Historical default              0           0
+		Credit history length           1311        0
+		Lower boundary for outliers:
+		{
+		    "Age": 2.0,
+		    "Home Ownership": 147.0,
+		    "Years employed": 4.0,
+		    "Loan intent": 2731.0,
+		    "Loan grade": 50.0,
+		    "Historical default": 0,
+		    "Credit history length": 1313.0
+		}
+
+6. Imputation of missing values
+	6.a. Imputation for continuous data
+		kNN with 5 neighbors is used for imputation
+	6.b. Imputation for categorical data
+		continuous data was used: True
+		kNN with 1 neighbors is used for imputation
+
+7. Feature engineering
+	7.a. Generate cyclical date features
+	7.b. Text feature engineering applied
+		7.e. Reducing dimensionality of tf_idf result
+
+8. Encoding categorical features
+		Column type                     column name                     encoding type
+		num                             Age                             2
+		shorttext                       Home Ownership                  0
+		num                             Years employed                  2
+		shorttext                       Loan intent                     0
+		shorttext                       Loan grade                      0
+		shorttext                       Historical default              0
+		num                             Credit history length           2
+	
+Remove columns without variation
+		Column Home Ownership_enc_0 has zero variance.
+		Column Loan intent_enc_0 has zero variance.
+		Column Loan grade_enc_0 has zero variance.
+
+9. Scaling features
+	9.a. Scaling continuous features
+		Scaler type is StandardScaler
+	9.b. Scaling categorical features
+		Number of scalable columns: 3
+		Scale entire categorical dataframe: True
+		Scaler type is StandardScaler
+	7.f. Feature selection
+		Discarded features are: ['Loan intent_enc_2', 'Loan intent_enc_3', 'Credit history length_enc']
+	7.g. Feature construction
+		(Annual income_wo_skew Loan percent income /) => new_feat_0
+		(Annual income_wo_skew Loan percent income /rev) => new_feat_1
+		(Loan percent income Interest rate /rev) => new_feat_2
+
+9. Scaling features
+	9.a. Scaling continuous features
+		Scaler type is StandardScaler
+		
+Final shape of the training dataset: (25876, 17)		
+Time required for preparing the training dataset: 24.706792 s

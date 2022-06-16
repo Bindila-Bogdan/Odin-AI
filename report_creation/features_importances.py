@@ -17,6 +17,7 @@ def extract_needed_info(dataset_name, target_column):
 
     cat_columns = json_config_data['4']
     created_features = json_config_data['7g']
+    dropped_columns = json_config_data['1a'] + json_config_data['1c']
 
     features_mapping = {}
 
@@ -26,6 +27,7 @@ def extract_needed_info(dataset_name, target_column):
     all_columns = list(data_set.columns)
     all_columns.remove(target_column)
     cont_columns = list(set(all_columns).difference(set(cat_columns)))
+    all_columns = list(set(all_columns).difference(set(dropped_columns)))
 
     return [cat_columns, cont_columns, all_columns, features_mapping], loaded_data[1:]
 

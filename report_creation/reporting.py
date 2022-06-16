@@ -148,8 +148,8 @@ def add_outliers_boundaries(json_report, cont_outlier_missing_data, cat_outlier_
 def format_info(sizes, useless_columns, duplicated_rows, cont_outlier_missing_data, cat_outlier_missing_data, language):
     if language == 'ro':
         sizes = sizes[0] + ' rânduri x ' + sizes[1] + ' coloane'
-        renaming = {0: 'coloană', 1: 'număr valori anormale', 2: 'număr valori lipsă',
-                    3: 'limită inferioară valori normale', 4: 'limită superioară valori normale'}
+        renaming = {0: 'coloana', 1: 'numar valori anormale', 2: 'numar valori lipsa',
+                    3: 'limita inferioara valori normale', 4: 'limita superioara valori normale'}
 
     else:
         sizes = sizes[0] + ' rows x ' + sizes[1] + ' columns'
@@ -167,6 +167,7 @@ def format_info(sizes, useless_columns, duplicated_rows, cont_outlier_missing_da
     outlier_missing_data = pd.concat(
         [cont_outlier_missing_data, cat_outlier_missing_data])
     outlier_missing_data.index = list(range(outlier_missing_data.shape[0]))
+    outlier_missing_data.dropna(how='all', inplace=True)
 
     return [sizes, useless_columns, duplicated_rows, outlier_missing_data]
 

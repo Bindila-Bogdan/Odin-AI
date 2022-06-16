@@ -39,7 +39,7 @@ def train(request):
         dataset_name = file_name[:-4]
 
         path = '/odinstorage/automl_data/datasets/' + dataset_name + '/'
-        files_storing.create_folder_store_train_data(
+        files_storing.create_folder_store_data(
             path, file_name, loaded_file)
 
         train_data_set = data_manipulation.read_dataset(path + file_name, True)
@@ -59,7 +59,7 @@ def train(request):
 
         try:
             automl = automl_backend.AutoML(
-                "train", dataset_name, target_column, task_type, 2, None)
+                "train", dataset_name, target_column, task_type, 1, None)
             metric, score = automl.train()
 
             path_ = '/odinstorage/automl_data/training_results/config_files/' + \
@@ -118,7 +118,7 @@ def test(request):
         dataset_name = train_file_name[:-4]
 
         path = '/odinstorage/automl_data/datasets/' + dataset_name + '/'
-        files_storing.create_folder_store_train_data(
+        files_storing.create_folder_store_data(
             path, file_name, loaded_file)
 
         try:
@@ -133,7 +133,7 @@ def test(request):
 
         try:
             automl = automl_backend.AutoML(
-                "test", dataset_name, target_column, task_type, 2, test_dataset_name)
+                "test", dataset_name, target_column, task_type, 1, test_dataset_name)
             predictions, metric, score = automl.predict()
 
             print(metric, score)

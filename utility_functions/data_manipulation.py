@@ -14,7 +14,9 @@ def read_dataset(csv_name, disable_logging=False):
 
     for i in range(len(delimiters)):
         try:
-            input_df = pd.read_csv(csv_name, sep=delimiters[i], na_values=config.MISSING_VALUES)
+            input_df = pd.read_csv(csv_name, sep=delimiters[i], na_values=config.MISSING_VALUES, skip_blank_lines=True)
+            input_df.dropna(how="all", inplace=True)
+
             if input_df.shape[1] != 1:
                 if not disable_logging:
                     logging.display('Used delimiter: {}'.format(delimiters[i]), p=4)

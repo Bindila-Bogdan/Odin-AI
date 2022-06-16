@@ -156,7 +156,7 @@ def serialize_param_space(folder_name, param_space_name, param_space):
         pickle.dump(param_space, f)
 
 
-def create_folder_store_train_data(path, file_name, loaded_file):
+def create_folder_store_data(path, file_name, loaded_file):
     try:
         os.mkdir(path)
     except OSError:
@@ -183,6 +183,7 @@ def store_features_report(dataset_name, target_column, report_name, outlier_miss
     path = '/odinstorage/automl_data/training_results/config_files/{}/{}/{}.csv'
     filled_path = path.format(dataset_name, target_column, report_name)
 
+    outlier_missing_data.dropna(how="all", inplace=True)
     outlier_missing_data.to_csv(filled_path, index=None)
 
     return filled_path

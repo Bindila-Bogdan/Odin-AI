@@ -1,6 +1,0 @@
-
-*Details of AutoML testing run*
-
-Initial shape of the dataset: (1338, 7)
-Testing r2 score: 0.8848181999948175
-Time required by testing: 0.2576 s

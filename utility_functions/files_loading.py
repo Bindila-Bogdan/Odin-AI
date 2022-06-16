@@ -109,7 +109,7 @@ def load_test_with_predictions(results_path, last_subfolder):
         test_with_predictions = file.read()
 
     test_with_predictions_encoded = base64.b64encode(
-        test_with_predictions).decode('ascii')
+        test_with_predictions[:-2]).decode('ascii')
 
     return test_with_predictions_encoded
 
@@ -119,7 +119,7 @@ def load_features_report(path):
         features_report = file.read()
 
     features_report_encoded = base64.b64encode(
-        features_report).decode('ascii')
+        features_report[:-2]).decode('ascii')
 
     return features_report_encoded
 

@@ -18,7 +18,7 @@ This represents the backend of Odin AI, a web platform that optimizes products a
 
 ## Diagram
 
-![Diagram of the system](./paper_presentation/system_diagram.png)
+![Diagram of the system](./system_diagram.png)
 
 ## Performance
 

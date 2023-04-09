@@ -1,11 +1,9 @@
 
-# Odin AI
-
 ![Odin AI logo](https://odin-ai.net/assets/logo.svg)
 
 ### Fully automated machine learning system that solves any classification or regression problem that is stored in a tabular format
 
-This represents the backend of Odin AI, a web platform that optimizes products and business processes by automatically generating in a few minutes, artificial intelligence-based solutions that solve data prediction problems in tabular format.
+This represents the backend of Odin AI, a web platform that optimizes products and business processes by automatically generating in a few minutes, artificial intelligence-based solutions that solve data prediction problems in tabular format. Django was used as the web framework for embedding the tool and creating the API. The application has hosted on Azure by using the App Service.
 
 ## Features
 
@@ -24,14 +22,14 @@ This represents the backend of Odin AI, a web platform that optimizes products a
 
 ## Performance
 
-:stopwatch: The results shown below were obtained after running the systems for only 30 minutes. For more information please refer to [this](https://gitlab.com/BindilaMihai/automl_tool).
+The results shown below were obtained after running the systems for only 30 minutes. For more information please refer to [this](https://gitlab.com/BindilaMihai/automl_tool).
 
 - Surpasses the performances of at least one similar tool in 50% of benchmarks
 - Achieves an average top position of 43.47% in the profile competitions agains humans
 
 ## Appendix
 
-- A complete presentation, a copy of the research paper, and more detail can be found in the [original repository](https://gitlab.com/BindilaMihai/automl_tool) of this tool.
+- A complete presentation, a copy of the research paper, and more details can be found in the [original repository](https://gitlab.com/BindilaMihai/automl_tool).
 - You can access the Odin AI web platform [here](https://odin-ai.net/#/).
 
 ## License

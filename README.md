@@ -3,7 +3,7 @@
 
 ### Fully automated machine learning system that solves any classification or regression problem that is stored in a tabular format
 
-This represents the backend of Odin AI, a web platform that optimizes products and business processes by automatically generating in a few minutes, artificial intelligence-based solutions that solve data prediction problems in tabular format. Django was used as the web framework for embedding the tool and creating the API. The application has hosted on Azure by using the App Service.
+This represents the backend of Odin AI, a web platform that optimizes products and business processes by automatically generating in a few minutes, artificial intelligence-based solutions that solve data prediction problems stored in tabular format. Django was used as the web framework for embedding the tool and creating the API. The application was hosted on Azure by using the App Service.
 
 ## Features
 
@@ -22,10 +22,10 @@ This represents the backend of Odin AI, a web platform that optimizes products a
 
 ## Performance
 
-The results shown below were obtained after running the systems for only 30 minutes. For more information please refer to [this](https://gitlab.com/BindilaMihai/automl_tool).
+The results shown below were obtained after running the systems for only 30 minutes. For more information please refer to [this](https://gitlab.com/BindilaMihai/automl_tool#performance).
 
-- Surpasses the performances of at least one similar tool in 50% of benchmarks
-- Achieves an average top position of 43.47% in the profile competitions agains humans
+- Outperforms at least one similar tool in 50% of benchmarks
+- Achieves an average top position of 43.47% in profile competitions against humans
 
 ## Appendix
 
